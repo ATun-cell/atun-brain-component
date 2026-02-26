@@ -33,17 +33,6 @@
             <groupId>com.atun.brain</groupId>
             <artifactId>agent-rag-spi</artifactId>
         </dependency>
-        
-        <dependency>
-            <groupId>com.atun.brain</groupId>
-            <artifactId>agent-memory-jdbc</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.atun.brain</groupId>
-            <artifactId>agent-rag-qdrant</artifactId>
-            <optional>true</optional>
-        </dependency>
 
         <!-- Spring Boot -->
         <dependency>
@@ -68,20 +57,6 @@
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai</artifactId>
-        </dependency>
-
-        <!-- Qdrant（条件化） -->
-        <dependency>
-            <groupId>io.qdrant</groupId>
-            <artifactId>client</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- Spring JDBC（条件化） -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!-- Jackson -->

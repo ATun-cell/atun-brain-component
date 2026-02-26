@@ -13,7 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
  * 工作流程：
  * 1. 短期记忆由 AiServices 的 ChatMemory 自动管理（已在 ToolOrchestrator 中配置）
  * 2. 通过 Spring ApplicationEvent 异步通知 RAG 模块将对话摘要向量化入库
- * 3. 监听器端失败时进入死信队列（由 agent-memory-jdbc 实现）
+ * 3. 应用服务可通过监听 MemoryPersistEvent 实现自定义持久化逻辑
  *
  * @author lij
  * @since 1.0

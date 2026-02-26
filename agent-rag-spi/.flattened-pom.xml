@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.atun.brain</groupId>
+    <artifactId>atun-brain-component</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <groupId>com.atun.brain</groupId>
+  <artifactId>agent-rag-spi</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>agent-rag-spi</name>
+  <description>Agent RAG 层 SPI - 定义 EmbeddingStore 提供者、检索增强与向量存储标准接口</description>
+  <dependencies>
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>

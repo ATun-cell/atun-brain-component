@@ -3,7 +3,22 @@
     "allow": [
       "Bash(mvn compile:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(winget install:*)",
+      "Bash(\"C:/Program Files \\(x86\\)/GitHub CLI/gh.exe\":*)",
+      "Bash(\"/c/Program Files/GitHub CLI/gh.exe\" auth:*)",
+      "Bash(git remote:*)",
+      "Bash(mvn clean:*)",
+      "Bash(java:*)",
+      "Bash(MAVEN_OPTS=\"-Djava.home=C:/Program Files/Java/jdk-21\" mvn compile:*)",
+      "Bash(\"C:\\\\dev\\\\tools\\\\jdks\\\\jdk-21\\\\bin\\\\java.exe\":*)",
+      "Bash(set JAVA_HOME=C:devtoolsjdksjdk-21:*)",
+      "Bash(JAVA_HOME=\"C:\\\\dev\\\\tools\\\\jdks\\\\jdk-21\" PATH=\"C:\\\\dev\\\\tools\\\\jdks\\\\jdk-21\\\\bin:$PATH\" mvn compile:*)",
+      "Bash(\"C:\\\\dev\\\\tools\\\\uf_devOps\\\\apache-maven-3.9.10-bin\\\\bin\\\\mvn.cmd\" compile:*)",
+      "Bash(set:*)",
+      "Bash(\"C:\\\\dev\\\\tools\\\\jdks\\\\jdk-21\\\\bin\\\\javac.exe\":*)",
+      "Bash(export:*)"
     ]
   }
 }

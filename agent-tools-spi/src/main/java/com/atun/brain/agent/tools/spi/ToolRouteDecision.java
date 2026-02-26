@@ -13,10 +13,12 @@ public record ToolRouteDecision(
         RouteStrategy strategy,
         /** 推荐的工具名称（DIRECT_TOOL 时有值） */
         String suggestedToolName,
+        /** 推荐的流程编排器名称（ORCHESTRATED_FLOW 时有值） */
+        String flowName,
         /** 分类原因（用于日志追踪） */
         String reason
 ) {
-    
+
     /**
      * 路由策略枚举
      */
@@ -26,27 +28,40 @@ public record ToolRouteDecision(
         /** 调用指定工具后由 LLM 合成回答 */
         DIRECT_TOOL,
         /** 由 AiServices 自动判断工具调用链 */
-        AUTO_TOOL_CHAIN
+        AUTO_TOOL_CHAIN,
+        /** 由 FlowOrchestrator 执行自定义编排流程 */
+        ORCHESTRATED_FLOW
     }
-    
+
     /**
      * 直连 LLM
      */
     public static ToolRouteDecision directLlm(String reason) {
-        return new ToolRouteDecision(RouteStrategy.DIRECT_LLM, null, reason);
+        return new ToolRouteDecision(RouteStrategy.DIRECT_LLM, null, null, reason);
     }
-    
+
     /**
      * 自动工具链（默认策略）
      */
     public static ToolRouteDecision autoToolChain(String reason) {
-        return new ToolRouteDecision(RouteStrategy.AUTO_TOOL_CHAIN, null, reason);
+        return new ToolRouteDecision(RouteStrategy.AUTO_TOOL_CHAIN, null, null, reason);
     }
-    
+
     /**
      * 直接调用指定工具
      */
     public static ToolRouteDecision directTool(String toolName, String reason) {
-        return new ToolRouteDecision(RouteStrategy.DIRECT_TOOL, toolName, reason);
+        return new ToolRouteDecision(RouteStrategy.DIRECT_TOOL, toolName, null, reason);
+    }
+
+    /**
+     * 执行编排流程
+     *
+     * @param flowName 流程编排器名称
+     * @param reason 分类原因
+     * @return 路由决策
+     */
+    public static ToolRouteDecision orchestratedFlow(String flowName, String reason) {
+        return new ToolRouteDecision(RouteStrategy.ORCHESTRATED_FLOW, null, flowName, reason);
     }
 }

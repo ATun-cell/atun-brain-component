@@ -2,6 +2,9 @@ package com.atun.brain.agent.core.pipeline.impl;
 
 import com.atun.brain.agent.core.model.AgentRequest;
 import com.atun.brain.agent.core.model.AgentResponse;
+import com.atun.brain.agent.core.pipeline.FlowContext;
+import com.atun.brain.agent.core.pipeline.FlowOrchestrator;
+import com.atun.brain.agent.core.pipeline.FlowRegistry;
 import com.atun.brain.agent.core.pipeline.ToolOrchestrator;
 import com.atun.brain.agent.memory.spi.ChatMemoryProvider;
 import com.atun.brain.agent.tools.spi.ToolProvider;
@@ -39,6 +42,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     private final ChatMemoryProvider memoryProvider;
     private final List<ToolProvider> toolProviders;
     private final String systemPrompt;
+    private final FlowRegistry flowRegistry;
 
     /** 全局 AiService 构建器 - 直连 LLM（无工具） */
     private final AiServices<AgentChatService> llmOnlyAiServices;
@@ -56,7 +60,8 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     public DefaultToolOrchestrator(ChatLanguageModel chatModel,
                                     ChatMemoryProvider memoryProvider,
                                     List<ToolProvider> toolProviders,
-                                    String systemPrompt) {
+                                    String systemPrompt,
+                                    FlowRegistry flowRegistry) {
         this.chatModel = chatModel;
         this.memoryProvider = memoryProvider;
         this.toolProviders = toolProviders != null
@@ -66,6 +71,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
                     .toList()
                 : List.of();
         this.systemPrompt = systemPrompt;
+        this.flowRegistry = flowRegistry;
 
         // 初始化直连 LLM 的 AiServices（无工具）
         this.llmOnlyAiServices = createAiServices(false);
@@ -117,19 +123,18 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
         long startTime = System.currentTimeMillis();
 
         try {
-            String memoryId = request.getMemoryId();
-
             // 根据路由策略选择执行模式
-            String response = switch (decision.strategy()) {
-                case DIRECT_LLM -> executeDirectLlm(memoryId, request);
-                case DIRECT_TOOL, AUTO_TOOL_CHAIN -> executeWithTools(memoryId, request);
+            AgentResponse response = switch (decision.strategy()) {
+                case DIRECT_LLM -> executeDirectLlm(request.getMemoryId(), request);
+                case DIRECT_TOOL, AUTO_TOOL_CHAIN -> executeWithTools(request.getMemoryId(), request);
+                case ORCHESTRATED_FLOW -> executeFlow(request, decision.flowName());
             };
 
             long latencyMs = System.currentTimeMillis() - startTime;
             log.info("[ToolOrchestrator] requestId={}, strategy={}, latencyMs={}",
                     request.getRequestId(), decision.strategy(), latencyMs);
 
-            return AgentResponse.withTools(request.getRequestId(), response, List.of("auto"), latencyMs);
+            return response;
 
         } catch (Exception e) {
             long latencyMs = System.currentTimeMillis() - startTime;
@@ -143,12 +148,13 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
      * <p>
      * 每次构建时动态绑定指定 memoryId 的 ChatMemory
      */
-    private String executeDirectLlm(String memoryId, AgentRequest request) {
+    private AgentResponse executeDirectLlm(String memoryId, AgentRequest request) {
         AgentChatService service = llmOnlyAiServices
                 .chatMemory(memoryProvider.getMemory(memoryId))
                 .build();
 
-        return service.chat(request.getUserId(), request.getUserMessage());
+        String response = service.chat(request.getUserId(), request.getUserMessage());
+        return AgentResponse.simple(request.getRequestId(), response, 0);
     }
 
     /**
@@ -156,11 +162,38 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
      * <p>
      * 每次构建时动态绑定指定 memoryId 的 ChatMemory
      */
-    private String executeWithTools(String memoryId, AgentRequest request) {
+    private AgentResponse executeWithTools(String memoryId, AgentRequest request) {
         AgentChatService service = toolsEnabledAiServices
                 .chatMemory(memoryProvider.getMemory(memoryId))
                 .build();
 
-        return service.chat(request.getUserId(), request.getUserMessage());
+        String response = service.chat(request.getUserId(), request.getUserMessage());
+        return AgentResponse.withTools(request.getRequestId(), response, List.of("auto"), 0);
+    }
+
+    /**
+     * 执行编排流程
+     *
+     * @param request  原始请求
+     * @param flowName 流程名称
+     * @return Agent 响应
+     */
+    private AgentResponse executeFlow(AgentRequest request, String flowName) {
+        if (flowName == null || flowName.isBlank()) {
+            throw new IllegalArgumentException("ORCHESTRATED_FLOW 策略必须指定 flowName");
+        }
+
+        FlowOrchestrator orchestrator = flowRegistry.getFlowOrchestrator(flowName)
+                .orElseThrow(() -> new IllegalArgumentException("未找到流程编排器：" + flowName));
+
+        FlowContext context = FlowContext.builder()
+                .request(request)
+                .flowName(flowName)
+                .build();
+
+        log.info("[FlowOrchestrator] 执行编排流程：flowName={}, requestId={}",
+                flowName, request.getRequestId());
+
+        return orchestrator.execute(context);
     }
 }

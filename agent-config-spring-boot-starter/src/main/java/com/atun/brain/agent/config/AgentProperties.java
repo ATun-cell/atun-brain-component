@@ -78,27 +78,12 @@ public class AgentProperties {
         private int maxMessages = 20;
         /** 最大 token 数（token 策略） */
         private int maxTokens = 4096;
-        /** 存储后端：jdbc | redis | in-memory */
-        private String store = "jdbc";
     }
-    
+
     @Data
     public static class RagConfig {
         /** 是否启用 RAG */
         private boolean enabled = true;
-        /** 向量存储后端：qdrant | milvus | pgvector */
-        private String store = "qdrant";
-        /** Qdrant 配置 */
-        private QdrantConfig qdrant = new QdrantConfig();
-    }
-    
-    @Data
-    public static class QdrantConfig {
-        private String host = "localhost";
-        private int port = 6334;
-        private boolean useTls = false;
-        private String collectionName = "agent_knowledge";
-        private int vectorSize = 1536;
     }
     
     @Data
