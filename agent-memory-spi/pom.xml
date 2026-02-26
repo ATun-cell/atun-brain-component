@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atun.brain</groupId>
+        <artifactId>atun-brain-component</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>agent-memory-spi</artifactId>
+    <packaging>jar</packaging>
+    <name>agent-memory-spi</name>
+    <description>Agent 记忆层 SPI - 定义 ChatMemoryStore 多后端适配与记忆窗口策略接口</description>
+
+    <dependencies>
+        <!-- LangChain4j Core（ChatMemory / ChatMemoryStore 接口） -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,52 @@
+package com.atun.brain.agent.tools.spi;
+
+/**
+ * 工具路由决策 - IntentClassifier 的输出
+ * <p>
+ * 描述 Agent 应该采取的工具调用策略。
+ *
+ * @author lij
+ * @since 1.0
+ */
+public record ToolRouteDecision(
+        /** 路由策略 */
+        RouteStrategy strategy,
+        /** 推荐的工具名称（DIRECT_TOOL 时有值） */
+        String suggestedToolName,
+        /** 分类原因（用于日志追踪） */
+        String reason
+) {
+    
+    /**
+     * 路由策略枚举
+     */
+    public enum RouteStrategy {
+        /** 直接调用 LLM 回答（无需工具） */
+        DIRECT_LLM,
+        /** 调用指定工具后由 LLM 合成回答 */
+        DIRECT_TOOL,
+        /** 由 AiServices 自动判断工具调用链 */
+        AUTO_TOOL_CHAIN
+    }
+    
+    /**
+     * 直连 LLM
+     */
+    public static ToolRouteDecision directLlm(String reason) {
+        return new ToolRouteDecision(RouteStrategy.DIRECT_LLM, null, reason);
+    }
+    
+    /**
+     * 自动工具链（默认策略）
+     */
+    public static ToolRouteDecision autoToolChain(String reason) {
+        return new ToolRouteDecision(RouteStrategy.AUTO_TOOL_CHAIN, null, reason);
+    }
+    
+    /**
+     * 直接调用指定工具
+     */
+    public static ToolRouteDecision directTool(String toolName, String reason) {
+        return new ToolRouteDecision(RouteStrategy.DIRECT_TOOL, toolName, reason);
+    }
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atun.brain</groupId>
+        <artifactId>atun-brain-component</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>agent-tools-spi</artifactId>
+    <packaging>jar</packaging>
+    <name>agent-tools-spi</name>
+    <description>Agent 工具层 SPI - 定义工具注册、路由决策与执行结果的标准接口</description>
+
+    <dependencies>
+        <!-- LangChain4j Core（仅引入 @Tool 注解和基础类型） -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>

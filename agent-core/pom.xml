@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atun.brain</groupId>
+        <artifactId>atun-brain-component</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>agent-core</artifactId>
+    <packaging>jar</packaging>
+    <name>agent-core</name>
+    <description>Agent 核心模块 - 四阶段 Pipeline 主流程（意图分类→工具编排→响应合成→记忆持久化）</description>
+
+    <dependencies>
+        <!-- SPI 层 -->
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-tools-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-memory-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-rag-spi</artifactId>
+        </dependency>
+
+        <!-- LangChain4j -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+        </dependency>
+
+        <!-- Spring Context（事件机制） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+    </dependencies>
+</project>

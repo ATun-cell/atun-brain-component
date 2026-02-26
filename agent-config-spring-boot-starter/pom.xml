@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.atun.brain</groupId>
+        <artifactId>atun-brain-component</artifactId>
+        <version>${revision}</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>agent-config-spring-boot-starter</artifactId>
+    <packaging>jar</packaging>
+    <name>agent-config-spring-boot-starter</name>
+    <description>Agent Spring Boot Starter - 一键配置模型、工具、记忆、RAG 全链路组件</description>
+
+    <dependencies>
+        <!-- Core + SPI -->
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-tools-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-memory-spi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-rag-spi</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-memory-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.atun.brain</groupId>
+            <artifactId>agent-rag-qdrant</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- LangChain4j -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+        </dependency>
+
+        <!-- Qdrant（条件化） -->
+        <dependency>
+            <groupId>io.qdrant</groupId>
+            <artifactId>client</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Spring JDBC（条件化） -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+    </dependencies>
+</project>

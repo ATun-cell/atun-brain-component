@@ -1,0 +1,4 @@
+com.atun.brain.agent.config.AgentModelAutoConfiguration
+com.atun.brain.agent.config.AgentMemoryAutoConfiguration
+com.atun.brain.agent.config.AgentRagAutoConfiguration
+com.atun.brain.agent.config.AgentPipelineAutoConfiguration
