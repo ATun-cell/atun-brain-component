@@ -11,6 +11,7 @@ import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -62,7 +63,7 @@ public class DefaultRouteDecisionAiService implements RouteDecisionAiService {
                       @UserMessage String userMessage);
     }
 
-    public DefaultRouteDecisionAiService(ChatLanguageModel chatModel) {
+    public DefaultRouteDecisionAiService(@Qualifier("chatModel") ChatLanguageModel chatModel) {
         this.routeDecisionService = AiServices.builder(RouteDecisionService.class)
                 .chatLanguageModel(chatModel)
                 .build();

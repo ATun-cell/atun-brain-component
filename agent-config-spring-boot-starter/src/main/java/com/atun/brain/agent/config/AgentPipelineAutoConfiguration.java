@@ -9,11 +9,10 @@ import com.atun.brain.agent.core.pipeline.ResponseComposer;
 import com.atun.brain.agent.core.pipeline.ToolOrchestrator;
 import com.atun.brain.agent.core.pipeline.impl.DefaultIntentClassifier;
 import com.atun.brain.agent.core.pipeline.impl.DefaultMemoryPersister;
-import com.atun.brain.agent.core.pipeline.router.DefaultRouteDecisionAiService;
-import com.atun.brain.agent.core.pipeline.router.RouteContextBuilder;
-import com.atun.brain.agent.core.pipeline.router.RouteDecisionAiService;
 import com.atun.brain.agent.core.pipeline.impl.DefaultResponseComposer;
 import com.atun.brain.agent.core.pipeline.impl.DefaultToolOrchestrator;
+import com.atun.brain.agent.core.pipeline.router.RouteContextBuilder;
+import com.atun.brain.agent.core.pipeline.router.RouteDecisionAiService;
 import com.atun.brain.agent.memory.spi.ChatMemoryProvider;
 import com.atun.brain.agent.rag.spi.RetrievalService;
 import com.atun.brain.agent.tools.spi.ToolProvider;
@@ -53,18 +52,6 @@ public class AgentPipelineAutoConfiguration {
     @ConditionalOnMissingBean
     public FlowRegistry flowRegistry() {
         return new FlowRegistry();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public RouteDecisionAiService routeDecisionAiService(@Qualifier("chatModel") ChatLanguageModel chatModel) {
-        return new DefaultRouteDecisionAiService(chatModel);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public RouteContextBuilder routeContextBuilder() {
-        return new RouteContextBuilder();
     }
 
     @Bean

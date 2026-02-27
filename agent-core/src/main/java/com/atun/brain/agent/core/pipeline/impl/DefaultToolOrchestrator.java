@@ -38,8 +38,7 @@ import java.util.List;
  */
 @Slf4j
 public class DefaultToolOrchestrator implements ToolOrchestrator {
-
-    private final ChatMemoryProvider memoryProvider;
+    
     private final List<ToolProvider> toolProviders;
 
     private final FlowRegistry flowRegistry;
@@ -91,7 +90,6 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
                                    ChatMemoryProvider memoryProvider,
                                    List<ToolProvider> toolProviders,
                                    FlowRegistry flowRegistry) {
-        this.memoryProvider = memoryProvider;
         this.toolProviders = toolProviders != null
                 ? toolProviders.stream()
                     .filter(ToolProvider::isEnabled)
