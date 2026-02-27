@@ -23,8 +23,11 @@ public class AgentProperties {
     /** AI 服务提供商：dashscope | openai */
     private String provider = "dashscope";
 
-    /** 系统提示词（可选，用于定制 AI 助手人设） */
-    private String systemPrompt;
+    /** 对话系统提示词 - 用于 DIRECT_LLM 场景（定义助手人设、语气、回答风格） */
+    private String conversationSystemPrompt;
+
+    /** 工具调用系统提示词 - 用于 AUTO_TOOL_CHAIN 场景（指导 AI 如何决策调用工具） */
+    private String toolCallSystemPrompt;
 
     /** 阿里云百炼配置 */
     private ModelProviderConfig dashscope = new ModelProviderConfig();

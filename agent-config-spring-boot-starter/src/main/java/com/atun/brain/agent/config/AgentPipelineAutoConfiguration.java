@@ -65,11 +65,14 @@ public class AgentPipelineAutoConfiguration {
             @org.springframework.beans.factory.annotation.Autowired(required = false)
             List<ToolProvider> toolProviders,
             FlowRegistry flowRegistry) {
-        log.info("初始化 ToolOrchestrator: toolProviders={}, systemPrompt={}",
+        log.info("初始化 ToolOrchestrator: toolProviders={}, conversationSystemPrompt={}, toolCallSystemPrompt={}",
                 toolProviders != null ? toolProviders.size() : 0,
-                agentProperties.getSystemPrompt() != null ? "已配置" : "未配置");
+                agentProperties.getConversationSystemPrompt() != null ? "已配置" : "未配置",
+                agentProperties.getToolCallSystemPrompt() != null ? "已配置" : "未配置");
         return new DefaultToolOrchestrator(chatModel, memoryProvider, toolProviders,
-                agentProperties.getSystemPrompt(), flowRegistry);
+                agentProperties.getConversationSystemPrompt(),
+                agentProperties.getToolCallSystemPrompt(),
+                flowRegistry);
     }
 
     @Bean

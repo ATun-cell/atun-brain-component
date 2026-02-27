@@ -19,18 +19,20 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * 默认工具编排器实现
  * <p>
  * 基于 AiServices 实现自动工具调用：
  * - DIRECT_LLM：不注册工具，直接对话
- * - AUTO_TOOL_CHAIN：注册所有工具，由 LLM 自动决策
- *
+ * - DIRECT_TOOL / AUTO_TOOL_CHAIN：注册工具，由 LLM 自动决策
+ * <p>
  * 设计原则：
+ * - 对话场景与工具调用场景使用独立的 systemPrompt
  * - AiServices 实例全局单例复用（工具列表不变）
  * - ChatMemory 按 memoryId 动态绑定
- * - System Message 可外部注入
+ * - 工具参数信息由 LangChain4j 自动从注解提取，无需手动指定
  *
  * @author lij
  * @since 1.0
@@ -41,7 +43,8 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     private final ChatLanguageModel chatModel;
     private final ChatMemoryProvider memoryProvider;
     private final List<ToolProvider> toolProviders;
-    private final String systemPrompt;
+    private final String conversationSystemPrompt;
+    private final String toolCallSystemPrompt;
     private final FlowRegistry flowRegistry;
 
     /** 全局 AiService 构建器 - 直连 LLM（无工具） */
@@ -60,7 +63,8 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     public DefaultToolOrchestrator(ChatLanguageModel chatModel,
                                     ChatMemoryProvider memoryProvider,
                                     List<ToolProvider> toolProviders,
-                                    String systemPrompt,
+                                    String conversationSystemPrompt,
+                                    String toolCallSystemPrompt,
                                     FlowRegistry flowRegistry) {
         this.chatModel = chatModel;
         this.memoryProvider = memoryProvider;
@@ -70,14 +74,15 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
                     .sorted(Comparator.comparingInt(ToolProvider::getOrder))
                     .toList()
                 : List.of();
-        this.systemPrompt = systemPrompt;
+        this.conversationSystemPrompt = conversationSystemPrompt;
+        this.toolCallSystemPrompt = toolCallSystemPrompt;
         this.flowRegistry = flowRegistry;
 
-        // 初始化直连 LLM 的 AiServices（无工具）
-        this.llmOnlyAiServices = createAiServices(false);
+        // 初始化直连 LLM 的 AiServices（使用对话提示词）
+        this.llmOnlyAiServices = createAiServices(false, conversationSystemPrompt);
 
-        // 初始化工具启用的 AiServices
-        this.toolsEnabledAiServices = createAiServices(true);
+        // 初始化工具启用的 AiServices（使用工具调用提示词）
+        this.toolsEnabledAiServices = createAiServices(true, toolCallSystemPrompt);
 
         log.info("[DefaultToolOrchestrator] 初始化完成，已注册 {} 个工具组，工具总数：{}",
                 this.toolProviders.size(),
@@ -90,29 +95,30 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
      * 创建 AiServices 构建器
      *
      * @param withTools 是否注册工具
+     * @param systemPrompt 系统提示词（可为 null 或空）
      * @return AiServices 构建器
      */
-    private AiServices<AgentChatService> createAiServices(boolean withTools) {
+    private AiServices<AgentChatService> createAiServices(boolean withTools, String systemPrompt) {
         var builder = AiServices.builder(AgentChatService.class)
                 .chatLanguageModel(chatModel);
 
         // 注入 System Message（如果提供了）
         if (systemPrompt != null && !systemPrompt.isBlank()) {
-            // 使用 systemMessageProvider 注入固定的系统消息
             builder.systemMessageProvider(context -> systemPrompt);
         }
 
-        // 注册工具
+        // 注册工具 - LangChain4j 会自动从工具方法的注解中提取参数信息
         if (withTools) {
             List<Object> allTools = new ArrayList<>();
             for (ToolProvider provider : toolProviders) {
                 allTools.addAll(provider.getToolObjects());
-                log.info("注册工具组：{} ({}个工具)", provider.getGroupName(),
+                log.debug("注册工具组：{} ({}个工具)", provider.getGroupName(),
                         provider.getToolObjects().size());
             }
             for (Object tool : allTools) {
                 builder.tools(tool);
             }
+            log.debug("AiServices 已注册 {} 个工具实例", allTools.size());
         }
 
         return builder;
@@ -146,7 +152,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     /**
      * 直连 LLM（不注册工具）
      * <p>
-     * 每次构建时动态绑定指定 memoryId 的 ChatMemory
+     * 每次构建时动态绑定指定 memoryId 的 ChatMemory，使用对话系统提示词
      */
     private AgentResponse executeDirectLlm(String memoryId, AgentRequest request) {
         AgentChatService service = llmOnlyAiServices
@@ -160,7 +166,8 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     /**
      * 带工具调用（AiServices 自动路由）
      * <p>
-     * 每次构建时动态绑定指定 memoryId 的 ChatMemory
+     * 每次构建时动态绑定指定 memoryId 的 ChatMemory，使用工具调用系统提示词
+     * LangChain4j 会自动将工具信息（名称、描述、参数）注入到 LLM 上下文中
      */
     private AgentResponse executeWithTools(String memoryId, AgentRequest request) {
         AgentChatService service = toolsEnabledAiServices
@@ -173,6 +180,8 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
 
     /**
      * 执行编排流程
+     * <p>
+     * 复杂业务场景由 FlowOrchestrator 自己处理，不使用 systemPrompt
      *
      * @param request  原始请求
      * @param flowName 流程名称
