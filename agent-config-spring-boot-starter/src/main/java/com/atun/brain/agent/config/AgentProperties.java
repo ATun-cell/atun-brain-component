@@ -26,7 +26,7 @@ public class AgentProperties {
     /** 对话系统提示词 - 用于 DIRECT_LLM 场景（定义助手人设、语气、回答风格） */
     private String conversationSystemPrompt;
 
-    /** 工具调用系统提示词 - 用于 AUTO_TOOL_CHAIN 场景（指导 AI 如何决策调用工具） */
+    /** 工具调用系统提示词 - 用于 DIRECT_TOOL 场景（指导 AI 如何调用工具） */
     private String toolCallSystemPrompt;
 
     /** 阿里云百炼配置 */

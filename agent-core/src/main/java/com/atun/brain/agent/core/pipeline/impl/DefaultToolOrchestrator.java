@@ -26,7 +26,8 @@ import java.util.function.Function;
  * <p>
  * 基于 AiServices 实现自动工具调用：
  * - DIRECT_LLM：不注册工具，直接对话
- * - DIRECT_TOOL / AUTO_TOOL_CHAIN：注册工具，由 LLM 自动决策
+ * - DIRECT_TOOL：注册工具，由 LLM 调用指定工具
+ * - ORCHESTRATED_FLOW：由 FlowOrchestrator 执行自定义编排流程
  * <p>
  * 设计原则：
  * - 对话场景与工具调用场景使用独立的 systemPrompt
@@ -49,7 +50,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     /** 全局 AiService 构建器 - 直连 LLM（无工具） */
     private final AiServices<AgentChatService> llmOnlyAiServices;
 
-    /** 全局 AiService 构建器 - 带工具（AUTO_TOOL_CHAIN） */
+    /** 全局 AiService 构建器 - 带工具（DIRECT_TOOL） */
     private final AiServices<AgentChatService> toolsEnabledAiServices;
 
     /**
@@ -129,7 +130,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
             // 根据路由策略选择执行模式
             AgentResponse response = switch (decision.strategy()) {
                 case DIRECT_LLM -> executeDirectLlm(request.getMemoryId(), request);
-                case DIRECT_TOOL, AUTO_TOOL_CHAIN -> executeWithTools(request.getMemoryId(), request);
+                case DIRECT_TOOL -> executeWithTools(request.getMemoryId(), request);
                 case ORCHESTRATED_FLOW -> executeFlow(request, decision.flowName());
             };
 

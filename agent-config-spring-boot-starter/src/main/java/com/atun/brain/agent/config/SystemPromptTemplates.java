@@ -32,9 +32,9 @@ public final class SystemPromptTemplates {
     /**
      * 工具调用场景默认提示词
      * <p>
-     * 用于 AUTO_TOOL_CHAIN 场景，指导 AI 如何决策调用工具。
+     * 用于 DIRECT_TOOL 场景，指导 AI 如何调用指定工具。
      * <p>
-     * 注意：工具的具体参数格式由 LangChain4j 从@Tool 注解自动提取，
+     * 注意：工具的具体参数格式由 LangChain4j 从 @Tool 注解自动提取，
      * 不需要在此处写死。
      */
     public static final String DEFAULT_TOOL_CALL_PROMPT = """

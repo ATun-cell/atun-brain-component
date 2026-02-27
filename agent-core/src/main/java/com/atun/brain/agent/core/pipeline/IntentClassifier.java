@@ -18,7 +18,7 @@ public interface IntentClassifier {
      * 分类用户意图，输出工具路由决策
      *
      * @param request Agent 请求上下文
-     * @return 路由决策（DIRECT_LLM / DIRECT_TOOL / AUTO_TOOL_CHAIN）
+     * @return 路由决策（DIRECT_LLM / DIRECT_TOOL / ORCHESTRATED_FLOW）
      */
     ToolRouteDecision classify(AgentRequest request);
 }

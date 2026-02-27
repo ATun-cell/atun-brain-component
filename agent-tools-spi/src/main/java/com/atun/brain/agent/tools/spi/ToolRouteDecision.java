@@ -27,8 +27,6 @@ public record ToolRouteDecision(
         DIRECT_LLM,
         /** 调用指定工具后由 LLM 合成回答 */
         DIRECT_TOOL,
-        /** 由 AiServices 自动判断工具调用链 */
-        AUTO_TOOL_CHAIN,
         /** 由 FlowOrchestrator 执行自定义编排流程 */
         ORCHESTRATED_FLOW
     }
@@ -38,13 +36,6 @@ public record ToolRouteDecision(
      */
     public static ToolRouteDecision directLlm(String reason) {
         return new ToolRouteDecision(RouteStrategy.DIRECT_LLM, null, null, reason);
-    }
-
-    /**
-     * 自动工具链（默认策略）
-     */
-    public static ToolRouteDecision autoToolChain(String reason) {
-        return new ToolRouteDecision(RouteStrategy.AUTO_TOOL_CHAIN, null, null, reason);
     }
 
     /**
