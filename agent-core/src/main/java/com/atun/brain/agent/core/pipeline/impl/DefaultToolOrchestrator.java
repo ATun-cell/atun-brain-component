@@ -104,7 +104,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
         this.llmOnlyAiService = AiServices.builder(AgentChatService.class)
                 .chatLanguageModel(chatModel)
                 .systemMessageProvider(context -> DEFAULT_CONVERSATION_PROMPT)
-                .chatMemoryProvider(memoryId -> memoryProvider.getMemory((String) memoryId))
+                .chatMemoryProvider(memoryId -> memoryProvider.getMemory(memoryId.toString()))
                 .build();
 
         // 初始化工具启用的 AiServices（使用写死的系统提示词）
@@ -117,7 +117,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
         AiServices<AgentChatServiceWithTools> toolsBuilder = AiServices.builder(AgentChatServiceWithTools.class)
                 .chatLanguageModel(chatModel)
                 .systemMessageProvider(context -> DEFAULT_TOOL_CALL_PROMPT)
-                .chatMemoryProvider(memoryId -> memoryProvider.getMemory((String) memoryId));
+                .chatMemoryProvider(memoryId -> memoryProvider.getMemory(memoryId.toString()));
         for (Object tool : allTools) {
             toolsBuilder = toolsBuilder.tools(tool);
         }
