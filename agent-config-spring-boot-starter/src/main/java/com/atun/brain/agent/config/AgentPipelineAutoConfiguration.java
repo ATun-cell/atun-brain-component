@@ -57,7 +57,9 @@ public class AgentPipelineAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public IntentClassifier intentClassifier(FlowRegistry flowRegistry,
+                                              @Autowired(required = false)
                                               RouteDecisionAiService routeDecisionAiService,
+                                              @Autowired(required = false)
                                               RouteContextBuilder routeContextBuilder,
                                               @Autowired(required = false)
                                               List<ToolProvider> toolProviders) {
