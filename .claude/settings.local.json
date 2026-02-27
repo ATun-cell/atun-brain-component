@@ -18,7 +18,8 @@
       "Bash(\"C:\\\\dev\\\\tools\\\\uf_devOps\\\\apache-maven-3.9.10-bin\\\\bin\\\\mvn.cmd\" compile:*)",
       "Bash(set:*)",
       "Bash(\"C:\\\\dev\\\\tools\\\\jdks\\\\jdk-21\\\\bin\\\\javac.exe\":*)",
-      "Bash(export:*)"
+      "Bash(export:*)",
+      "Bash(git:*)"
     ]
   }
 }

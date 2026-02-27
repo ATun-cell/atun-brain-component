@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,7 +64,10 @@ public class RouteContextBuilder {
                     if (method.isAnnotationPresent(Tool.class)) {
                         Tool toolAnnotation = method.getAnnotation(Tool.class);
                         String toolName = method.getName();
-                        String toolDesc = toolAnnotation.value();
+                        // toolAnnotation.value() 返回 String[]，取第一个元素作为描述
+                        String toolDesc = toolAnnotation.value().length > 0
+                                ? String.join("", toolAnnotation.value())
+                                : method.getName();
                         // 格式：工具组 - 方法名：工具描述
                         descriptions.add(groupName + " - " + toolName + ": " + toolDesc);
                     }
