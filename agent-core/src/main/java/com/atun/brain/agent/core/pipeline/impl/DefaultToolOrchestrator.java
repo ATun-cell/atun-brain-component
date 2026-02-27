@@ -43,8 +43,7 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
     private final ChatLanguageModel chatModel;
     private final ChatMemoryProvider memoryProvider;
     private final List<ToolProvider> toolProviders;
-    private final String conversationSystemPrompt;
-    private final String toolCallSystemPrompt;
+    
     private final FlowRegistry flowRegistry;
 
     /** 全局 AiService 构建器 - 直连 LLM（无工具） */
@@ -74,8 +73,6 @@ public class DefaultToolOrchestrator implements ToolOrchestrator {
                     .sorted(Comparator.comparingInt(ToolProvider::getOrder))
                     .toList()
                 : List.of();
-        this.conversationSystemPrompt = conversationSystemPrompt;
-        this.toolCallSystemPrompt = toolCallSystemPrompt;
         this.flowRegistry = flowRegistry;
 
         // 初始化直连 LLM 的 AiServices（使用对话提示词）

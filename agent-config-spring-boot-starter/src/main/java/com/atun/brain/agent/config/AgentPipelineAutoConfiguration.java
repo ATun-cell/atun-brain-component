@@ -18,6 +18,7 @@ import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -61,8 +62,9 @@ public class AgentPipelineAutoConfiguration {
     @ConditionalOnMissingBean
     public ToolOrchestrator toolOrchestrator(
             @Qualifier("chatModel") ChatLanguageModel chatModel,
+            @Autowired(required = false)
             ChatMemoryProvider memoryProvider,
-            @org.springframework.beans.factory.annotation.Autowired(required = false)
+            @Autowired(required = false)
             List<ToolProvider> toolProviders,
             FlowRegistry flowRegistry) {
         log.info("初始化 ToolOrchestrator: toolProviders={}, conversationSystemPrompt={}, toolCallSystemPrompt={}",
@@ -78,7 +80,7 @@ public class AgentPipelineAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public ResponseComposer responseComposer(
-            @org.springframework.beans.factory.annotation.Autowired(required = false)
+            @Autowired(required = false)
             RetrievalService retrievalService) {
         boolean ragEnabled = retrievalService != null;
         log.info("初始化 ResponseComposer: ragEnabled={}", ragEnabled);
